@@ -6,6 +6,7 @@ import com.capgemini.onlinemovieticketsystem.exception.*;
 import com.capgemini.onlinemovieticketsystem.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,27 @@ public class CustomerServiceImple implements CustomerService {
     private ScreenDao screenDao;
 
 
+    //-------------------------------------------BOOKING-----------------------------------//
+
+
+    @Override
+    public Booking addBooking(Booking booking) {
+        booking = bookingDao.save(booking);
+        return booking;
+    }
+
+    @Override
+    public Booking createBooking(Booking booking, String paymentMethod, String screenName) {
+        BookingTransaction bookingTransaction = makePayment(paymentMethod,booking.getTotalCost());
+        Ticket ticket = createTicket(booking.getSeatIds(),screenName);
+        booking.setBookingDate(LocalDate.now());
+        booking.setTransactionId(bookingTransaction.getTransactionId());
+        booking.setTicket(ticket);
+        booking = addBooking(booking);
+        return booking;
+    }
+
+
     @Override
     public Booking fetchBookingById(int bookingId) {
         Optional<Booking> option= bookingDao.findById(bookingId);
@@ -66,6 +88,34 @@ public class CustomerServiceImple implements CustomerService {
     }
 
     @Override
+    public BookingTransaction makePayment(String paymentMethod, double cost) {
+        BookingTransaction transaction = new BookingTransaction();
+        transaction.setTransactionAmount(cost);
+        transaction.setTransactionMethod(paymentMethod);
+        transaction = transactionDao.save(transaction);
+        return transaction;
+    }
+
+    //------------------------------------TICKET-------------------------------------//
+
+    /**
+     * generating ticket
+     * @param seatIds
+     * @param screenName
+     * @return
+     */
+    public Ticket createTicket(List<Integer> seatIds,String screenName) {
+        Ticket ticket= new Ticket();
+        ticket.setNoOfSeats(seatIds.size());
+        ticket.setScreenName(screenName);
+        ticket.setSeatIds(seatIds);
+        ticket.setTicketStatus(TicketStatus.BOOKED);
+        ticket = ticketDao.save(ticket);
+        return ticket;
+    }
+
+
+    @Override
     public Ticket showTicket(int bookingId) {
         Booking booking = fetchBookingById(bookingId);
         Ticket ticket = booking.getTicket();
@@ -75,25 +125,7 @@ public class CustomerServiceImple implements CustomerService {
         return ticket;
     }
 
-    @Override
-    public BookingTransaction makePayment(String paymentMethod, double cost) {
-        BookingTransaction transaction = new BookingTransaction();
-        transaction.setTransactionAmount(cost);
-        transaction.setTransactionMethod(paymentMethod);
-        transaction = transactionDao.save(transaction);
-        return transaction;
-    }
-
-//    @Override
-//    public Booking createBooking(Booking booking, String paymentMethod, String screenName) {
-//        BookingTransaction bookingTransaction = makePayment(paymentMethod,booking.getTotalCost());
-//        Ticket ticket = createTicket(booking.getSeatIds(),screenName);
-//        booking.setBookingDate(LocalDate.now());
-//        booking.setTransactionId(bookingTransaction.getTransactionId());
-//        booking.setTicket(ticket);
-//        booking = addBooking(booking);
-//        return booking;
-//    }
+    //---------------------------------------SCREEN---------------------------------------//
 
     @Override
     public List<Screen> fetchAllScreen() {
@@ -127,6 +159,8 @@ public class CustomerServiceImple implements CustomerService {
         throw new TheaterNotFoundException("theater not found for id="+theaterId);
     }
 
+
+    //---------------------------------------MOVIE----------------------------------//
     @Override
     public List<Movie> fetchAllMovie() {
         List<Movie> movies = movieDao.findAll();
@@ -143,6 +177,8 @@ public class CustomerServiceImple implements CustomerService {
         throw new MovieNotFoundException("Movie not found for id=" + movieId);
     }
 
+
+    //----------------------------------------SHOW---------------------------------------//
     @Override
     public Show fetchShowById(int showId) {
         Optional<Show> optional = showDao.findById(showId);
@@ -160,9 +196,49 @@ public class CustomerServiceImple implements CustomerService {
         return shows;
     }
 
-	@Override
-	public Booking createBooking(Booking booking, String paymentMethod, String screenName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    //------------------------------------------------SEAT----------------------------------//
+
+    @Override
+    public Seat addSeat(Seat seat) {
+        seatDao.save(seat);
+        return seat;
+    }
+    @Override
+    public Seat getSeat(int id) {
+        Optional<Seat> optional = seatDao.findById(id);
+        if(optional.isPresent())
+        {
+            Seat seat = optional.get();
+            return seat;
+        }
+        throw new SeatNotFoundException("Seat not found for id:"+id);
+    }
+    @Override
+    public Seat blockSeat(int id) {
+        Seat seat = getSeat(id);
+        seat.setSeatStatus(SeatStatus.BLOCKED);
+        seatDao.save(seat);
+        return seat;
+    }
+    @Override
+    public Seat bookSeat(int id) {
+        Seat seat = getSeat(id);
+        seat.setSeatStatus(SeatStatus.BOOKED);
+        seatDao.save(seat);
+        return seat;
+    }
+    @Override
+    public Seat cancelSeat(int id) {
+        Seat seat = getSeat(id);
+        seat.setSeatStatus(SeatStatus.AVAILABLE);
+        seatDao.save(seat);
+        return seat;
+    }
+
+    @Override
+    public List<Seat> fetchAllSeats() {
+        List<Seat> list = seatDao.findAll();
+        return list;
+    }
+
 }

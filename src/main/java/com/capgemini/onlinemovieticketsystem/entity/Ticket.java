@@ -15,100 +15,58 @@ import javax.persistence.Table;
 public class Ticket {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name="ticketId")
+	@GeneratedValue
 	private int ticketId;
-	
-	@Column(name="noOfSeats")
 	private int noOfSeats;
-	
 	@ElementCollection
-	private List<String> seatNames;
-	
-	@Column(name="ticketStatus")
-	private boolean ticketStatus;
-	
-	@Column(name="screenName")
-	private String screenName;
-	
-//	@OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "booking", referencedColumnName = "bookingId")
-    private int bookingId;
-  
-    @ElementCollection
 	private List<Integer> seatIds;
-    
-	public Ticket() {
-	}
-
-	public Ticket(int ticketId, int noOfSeats, List<String> seatNames, boolean ticketStatus, String screenName,
-			int bookingId) {
-		super();
-		this.ticketId = ticketId;
-		this.noOfSeats = noOfSeats;
-		this.seatNames = seatNames;
-		this.ticketStatus = ticketStatus;
-		this.screenName = screenName;
-		this.bookingId = bookingId;
-	}
+	private TicketStatus ticketStatus;
+	private String screenName;
 
 	public int getTicketId() {
 		return ticketId;
 	}
-
 	public void setTicketId(int ticketId) {
 		this.ticketId = ticketId;
 	}
-
 	public int getNoOfSeats() {
 		return noOfSeats;
 	}
-
 	public void setNoOfSeats(int noOfSeats) {
 		this.noOfSeats = noOfSeats;
 	}
-
-	public List<String> getSeatName() {
-		return seatNames;
-	}
-
-	public void setSeatName(List<String> seatNames) {
-		this.seatNames = seatNames;
-	}
-
-
-	public String getScreenName() {
-		return screenName;
-	}
-
-	public void setScreenName(String screenName) {
-		this.screenName = screenName;
-	}
-
-	public int getBooking() {
-		return bookingId;
-	}
-
-	public void setBooking(int bookingId) {
-		this.bookingId = bookingId;
-	}
-
 	public List<Integer> getSeatIds() {
 		return seatIds;
 	}
-
 	public void setSeatIds(List<Integer> seatIds) {
 		this.seatIds = seatIds;
 	}
-
-	public boolean getTicketStatus() {
+	public TicketStatus isTicketStatus() {
 		return ticketStatus;
 	}
-
-	public void setTicketStatus(boolean ticketStatus) {
+	public void setTicketStatus(TicketStatus ticketStatus) {
 		this.ticketStatus = ticketStatus;
 	}
+	public String getScreenName() {
+		return screenName;
+	}
+	public void setScreenName(String screenName) {
+		this.screenName = screenName;
+	}
+	@Override
+	public int hashCode() {
+		String ticketIdString = ""+ticketId;
+		return ticketIdString.hashCode();
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if(obj == null || obj instanceof Ticket)
+			return false;
+		Ticket other = (Ticket) obj;
+		return this.ticketId == other.ticketId;
+	}
 
-	
-	
+
 }

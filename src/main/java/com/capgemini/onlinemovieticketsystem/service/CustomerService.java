@@ -18,6 +18,80 @@ import com.capgemini.onlinemovieticketsystem.entity.Ticket;
 @Service
 public interface CustomerService {
 	
+
+	//---------------------------------BOOKING------------------------------//
+
+
+	 Booking addBooking(Booking booking);
+
+	 Booking fetchBookingById(int bookingId);
+	
+	 List<Booking> fetchAllBookings();
+	
+	 Ticket showTicket(int bookingId);
+	
+	 BookingTransaction makePayment(String paymentMethod, double cost);
+	
+	 Booking createBooking(Booking booking, String paymentMethod,String screenName);
+
+	 String cancelBooking(int bookingId);
+
+
+
+//--------------------------------------SCREEN---------------------------------//
+
+
+
+	List<Screen> fetchAllScreen();
+
+	Screen fetchScreenById(int screenId);
+
+
+
+	//------------------------------------THEATER-------------------------------//
+
+
+
+	List<Theater> fetchAllTheater();
+
+	Theater fetchTheaterById(int theaterId);
+
+
+
+	//----------------------------------MOVIE------------------------------//
+
+
+
+	List<Movie> fetchAllMovie() ;
+
+	Movie fetchMovieById(int movieId) ;
+
+
+
+	//-----------------------------------SHOW-----------------------------//
+
+
+	Show fetchShowById(int showId) ;
+
+	List<Show>fetchAllShow() ;
+
+	//------------------------------------SEAT-----------------------------------------------//
+
+	public Seat addSeat(Seat seat);
+
+	public Seat getSeat(int id);
+
+	public Seat blockSeat(int id);
+
+	public Seat bookSeat(int id);
+
+	public Seat cancelSeat(int id);
+
+	List<Seat> fetchAllSeats();
+
+
+//-----------------------------------------------------------------------------------------------------//
+
 //     Movie searchMovie(int theatreId, String movieName );
 //
 //	 Screen searchScreen(int theatreId, int screenId);
@@ -56,25 +130,6 @@ public interface CustomerService {
 //
 //	 List<Theater> findAllTheatres();
 //
-
-	//---------------------------------BOOKING------------------------------//
-
-
-	 Booking fetchBookingById(int bookingId);
-	
-	 List<Booking> fetchAllBookings();
-	
-	 Ticket showTicket(int bookingId);
-	
-	 BookingTransaction makePayment(String paymentMethod, double cost);
-	
-	 Booking createBooking(Booking booking, String paymentMethod,String screenName);
-
-	 String cancelBooking(int bookingId);
-
-
-//	 //-------------------------------
-//
 //	 List<Movie> fetchAllMovies() ;
 //
 //	 Movie fetchById(int movieId) ;
@@ -103,41 +158,5 @@ public interface CustomerService {
 //
 //	List<Theater> findAll();
 
-//--------------------------------------SCREEN---------------------------------//
-
-
-
-	List<Screen> fetchAllScreen();
-
-	Screen fetchScreenById(int screenId);
-
-
-
-	//------------------------------------THEATER-------------------------------//
-
-
-
-	List<Theater> fetchAllTheater();
-
-	Theater fetchTheaterById(int theaterId);
-
-
-
-	//----------------------------------MOVIE------------------------------//
-
-
-
-	List<Movie> fetchAllMovie() ;
-
-	Movie fetchMovieById(int movieId) ;
-
-
-
-	//-----------------------------------SHOW-----------------------------//
-
-
-	Show fetchShowById(int showId) ;
-
-	List<Show>fetchAllShow() ;
 
 }

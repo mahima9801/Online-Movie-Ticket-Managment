@@ -20,7 +20,7 @@ public interface AdminService {
 
 	 String deleteMovieById(int movieid) ;
 
-	Boolean deleteScreenById(int screenId);
+	 Boolean deleteScreenById(int screenId);
 
 
 	Movie save(Movie movie);

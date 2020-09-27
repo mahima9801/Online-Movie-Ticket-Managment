@@ -25,62 +25,65 @@ public class Controller<TicketDto> {
     private static final Logger Log = LoggerFactory.getLogger(Controller.class);
     
     //----------------------------------------Seat--------------------------------------------//
+
+
+
+    @Autowired
+    private AdminService service;
+
     @Autowired
     private CustomerService customerService;
 
     public Seat convertToSeat(SeatDto dto) {
         Seat seat = new Seat();
         seat.setSeatId(dto.getSeatId());
-        seat.setSeatStatus(BookingStatus.AVAILABLE);
+        seat.setSeatStatus(SeatStatus.AVAILABLE);
         seat.setSeatPrice(dto.getSeatPrice());
         return seat;
     }
 
+    @PostMapping("/add")
+    public ResponseEntity<Seat> addSeat(@RequestBody SeatDto dto) {
+        Seat seat = convertToSeat(dto);
+        customerService.addSeat(seat);
+        ResponseEntity<Seat> response = new ResponseEntity<Seat>(seat, HttpStatus.OK);
+        return response;
+    }
 
+    @PutMapping("/blockseat/{id}")
+    public ResponseEntity<Seat> blockSeat(@PathVariable("id") int id) {
+        Seat seat = customerService.blockSeat(id);
+        ResponseEntity<Seat> response = new ResponseEntity<Seat>(seat, HttpStatus.OK);
+        return response;
+    }
 
-//    @PostMapping("/add")
-//    public ResponseEntity<Seat> addSeat(@RequestBody SeatDto dto) {
-//        Seat seat = convertToSeat(dto);
-//        service.addSeat(seat);
-//        ResponseEntity<Seat> response = new ResponseEntity<Seat>(seat, HttpStatus.OK);
-//        return response;
-//    }
-//
-//    @PutMapping("/blockseat/{id}")
-//    public ResponseEntity<Seat> blockSeat(@PathVariable("id") int id) {
-//        Seat seat = service.blockSeat(id);
-//        ResponseEntity<Seat> response = new ResponseEntity<Seat>(seat, HttpStatus.OK);
-//        return response;
-//    }
-//
-//    @PutMapping("/bookseat/{id}")
-//    public ResponseEntity<Seat> bookSeat(@PathVariable("id") int id) {
-//        Seat seat = service.bookSeat(id);
-//        ResponseEntity<Seat> response = new ResponseEntity<Seat>(seat, HttpStatus.OK);
-//        return response;
-//    }
+    @PutMapping("/bookseat/{id}")
+    public ResponseEntity<Seat> bookSeat(@PathVariable("id") int id) {
+        Seat seat = customerService.bookSeat(id);
+        ResponseEntity<Seat> response = new ResponseEntity<Seat>(seat, HttpStatus.OK);
+        return response;
+    }
 
-//    @PutMapping("/cancelseat/{id}")
-//    public ResponseEntity<Seat> cancelSeat(@PathVariable("id") int id) {
-//        Seat seat = service.cancelSeat(id);
-//        ResponseEntity<Seat> response = new ResponseEntity<Seat>(seat, HttpStatus.OK);
-//        return response;
-//    }
-//
+    @PutMapping("/cancelseat/{id}")
+    public ResponseEntity<Seat> cancelSeat(@PathVariable("id") int id) {
+        Seat seat = customerService.cancelSeat(id);
+        ResponseEntity<Seat> response = new ResponseEntity<Seat>(seat, HttpStatus.OK);
+        return response;
+    }
 
-//    @GetMapping
-//    public ResponseEntity<List<Seat>> fetchAllSeat() {
-//        List<Seat> seats = customerService.fetchAllSeat();
-//        ResponseEntity<List<Seat>> response = new ResponseEntity<>(seats, HttpStatus.OK);
-//        return response;
-//    }
-//
-//    @GetMapping("/find/{id}")
-//    public ResponseEntity<Seat> findSeatById(@PathVariable("id")  int id) {
-//        Seat seat = customerService.getSeat(id);
-//        ResponseEntity<Seat> response = new ResponseEntity<>(seat, HttpStatus.OK);
-//        return response;
-//    }
+    @GetMapping
+    public ResponseEntity<List<Seat>> fetchAllSeat() {
+        List<Seat> seats = customerService.fetchAllSeats();
+        ResponseEntity<List<Seat>> response = new ResponseEntity<>(seats, HttpStatus.OK);
+        return response;
+    }
+
+    @GetMapping("/find/{id}")
+    public ResponseEntity<Seat> findSeatById(@PathVariable("id")  int id) {
+        Seat seat = customerService.getSeat(id);
+        ResponseEntity<Seat> response = new ResponseEntity<>(seat, HttpStatus.OK);
+        return response;
+    }
 
     @ExceptionHandler(SeatNotFoundException.class)
     public ResponseEntity<String> SeatNotFound(SeatNotFoundException ex) {
@@ -269,7 +272,7 @@ public class Controller<TicketDto> {
     public List<Seat> choosenSeats(List<Integer> seatIds) {
         List<Seat> seats = new ArrayList<Seat>();
         for(Integer id:seatIds) {
-            Seat seat = new Seat(id, BookingStatus.BOOKED, 1542);
+            Seat seat = new Seat(id, SeatStatus.BOOKED, 1542);
             seats.add(seat);
         }
         return seats;
@@ -523,35 +526,41 @@ public class Controller<TicketDto> {
         return response;
     }
 
-//    @ExceptionHandler(Throwable.class)
-//    public ResponseEntity<String> handleAll(Throwable ex) {
-//        Log.error("handleAll()", ex);// this will get logged
-//        String msg = ex.getMessage();
-//        ResponseEntity<String> response = new ResponseEntity<>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
-//        return response;
-//    }
+
 
 
     //--------------------------------------THEATER---------------------------------//
-    @Autowired
-    private AdminService service;
 
-    /**
-     * Adding theater
-     * @param theaterDto
-     * @return
-     */
-//    @PostMapping("/add")
-//    public <CreateTheaterRequest> ResponseEntity<TheaterDetailsDto> addTheater(@RequestBody CreateTheaterRequest theaterDto) {
-//        Theater theater = convert(theaterDto);
-//        theater = service.save(theater);
-//        TheaterDetailsDto detailsDto = convertTheaterDetails(theater);
-//        ResponseEntity<TheaterDetailsDto> response = new ResponseEntity<TheaterDetailsDto>(detailsDto, HttpStatus.OK);
-//        return response;
-//    }
+//    /**
+//     * Adding theater
+//     * @param theaterDto
+//     * @return
+//     */
+//        @PostMapping("/add")
+//        public <CreateTheaterRequest> ResponseEntity<TheaterDetailsDto> addTheater(@RequestBody CreateTheaterRequest theaterDto) {
+//            Theater theater = convert(theaterDto);
+//            theater = service.save(theater);
+//            TheaterDetailsDto detailsDto = convertTheaterDetails(theater);
+//            ResponseEntity<TheaterDetailsDto> response = new ResponseEntity<TheaterDetailsDto>(detailsDto, HttpStatus.OK);
+//            return response;
+//        }
 //
-//    private <CreateTheaterRequest> Theater convert(CreateTheaterRequest theaterDto) {
+//    /**
+//     * convert from theater: dto -> entity
+//     * @param theaterDto
+//     * @return
+//     */
+//    public Theater convert(CreateTheaterRequest theaterdto) {
+//        Theater theater = new Theater();
+//        theater.setTheaterId(theaterdto.getTheaterId());
+//        theater.setTheaterName(theaterdto.getTheaterName());
+//        theater.setTheaterCity(theaterdto.getTheaterCity());
+//        theater.setManagerName(theaterdto.getManagerName());
+//        theater.setManagerContact(theaterdto.getManagerContact());
+//        theater.setMovieList(addMovie());
+//        return theater;
 //    }
+
 
     /**
      * Fetching all theaters

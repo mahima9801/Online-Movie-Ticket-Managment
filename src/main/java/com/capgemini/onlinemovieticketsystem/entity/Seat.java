@@ -1,7 +1,5 @@
 package com.capgemini.onlinemovieticketsystem.entity;
 
-
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -21,7 +19,7 @@ public class Seat {
 	private int seatId;
 	
 	@Enumerated(EnumType.STRING)
-    private BookingStatus seatStatus;
+    private SeatStatus seatStatus;
 	
 	@Column(name="seatPrice")
 	private double seatPrice;
@@ -30,7 +28,7 @@ public class Seat {
 	
 	}
 
-	public Seat(int seatId, BookingStatus seatStatus, double seatPrice) {
+	public Seat(int seatId, SeatStatus seatStatus, double seatPrice) {
 		super();
 		this.seatId = seatId;
 		this.seatStatus = seatStatus;
@@ -45,11 +43,11 @@ public class Seat {
 		this.seatId = seatId;
 	}
 
-	public BookingStatus getSeatStatus() {
+	public SeatStatus getSeatStatus() {
 		return seatStatus;
 	}
 
-	public void setSeatStatus(BookingStatus seatStatus) {
+	public void setSeatStatus(SeatStatus seatStatus) {
 		this.seatStatus = seatStatus;
 	}
 
@@ -61,18 +59,18 @@ public class Seat {
 		this.seatPrice = seatPrice;
 	}
 	
-	public Enum<BookingStatus> blockSeat(){
-		this.setSeatStatus(BookingStatus.BLOCKED);
+	public SeatStatus blockSeat(){
+		this.setSeatStatus(SeatStatus.AVAILABLE.BLOCKED);
 		return this.seatStatus;
 	}
 	
 	public Seat bookSeat(){
-		this.setSeatStatus(BookingStatus.BOOKED);
+		this.setSeatStatus(SeatStatus.AVAILABLE.BOOKED);
 		return this;
 	}
 	
 	public Seat cancelSeatBooking(){
-		this.setSeatStatus(BookingStatus.AVAILABLE);
+		this.setSeatStatus(SeatStatus.AVAILABLE.AVAILABLE);
 		return this;
 	}
 }
