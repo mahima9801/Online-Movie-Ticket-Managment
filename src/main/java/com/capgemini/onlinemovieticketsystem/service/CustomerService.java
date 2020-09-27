@@ -71,23 +71,21 @@ public interface CustomerService {
 	//-----------------------------------SHOW-----------------------------//
 
 
-	Show fetchShowById(int showId) ;
-
-	List<Show>fetchAllShow() ;
+	Show findById(int showId) throws ShowNotFoundException;
+	
+	List<Show> fetchAllShows();
 
 	//------------------------------------SEAT-----------------------------------------------//
 
-	public Seat addSeat(Seat seat);
-
-	public Seat getSeat(int id);
-
-	public Seat blockSeat(int id);
-
-	public Seat bookSeat(int id);
-
-	public Seat cancelSeat(int id);
-
-	List<Seat> fetchAllSeats();
+	Seat getSeat(int seatId) throws SeatNotFoundException;
+	
+	Seat blockSeat(int seatId) throws SeatNotFoundException;
+	
+	Seat bookSeat(int seatId) throws SeatNotFoundException;
+	
+	Seat cancelSeat(int seatId) throws SeatNotFoundException; 
+	
+	List<Seat> getAllSeats();
 
 
 //-----------------------------------------------------------------------------------------------------//
