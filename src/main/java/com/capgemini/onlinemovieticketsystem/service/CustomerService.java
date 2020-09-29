@@ -21,16 +21,16 @@ public interface CustomerService {
 
 	//------------------------------------SEAT-----------------------------------------------//
 
-	public Seat addSeat(Seat seat);
-
-	public Seat getSeat(int id);
-
-	public Seat blockSeat(int id);
-
-	public Seat bookSeat(int id);
-
-	public Seat cancelSeat(int id);
-
+	Seat addSeat(Seat seat);
+		
+	Seat getSeat(int seatId) throws SeatNotFoundException;
+		
+	Seat blockSeat(int seatId) throws SeatNotFoundException;
+		
+	Seat bookSeat(int seatId) throws SeatNotFoundException;
+		
+	Seat cancelSeat(int seatId) throws SeatNotFoundException; 
+		
 	List<Seat> getAllSeats();
 
 
