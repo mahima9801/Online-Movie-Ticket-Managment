@@ -1,5 +1,5 @@
 package com.capgemini.onlinemovieticketsystem.entity;
 
-public enum SeatStatus {
+public enum BookingStatus {
     AVAILABLE, BOOKED, BLOCKED;
 }
